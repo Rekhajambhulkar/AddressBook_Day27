@@ -99,12 +99,10 @@ public class AddressBookDBService {
 		return addressBookList;
 	}
 
-	// uc3
 	public int updatePersonData(String firstname, String address) {
 		return this.updatePersonDataUsingStatement(firstname, address);
 	}
 
-	// uc3
 	private int updatePersonDataUsingStatement(String firstname, String address) {
 		String sql = String.format("update addressbook set address = '%s' where firstname = '%s';", address, firstname);
 		try (Connection con = this.getConnection()) {
@@ -116,7 +114,6 @@ public class AddressBookDBService {
 		return 0;
 	}
 
-	// uc3
 	private void preparedStatementForAddressBook() {
 		try {
 			Connection con = this.getConnection();
@@ -125,5 +122,22 @@ public class AddressBookDBService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public List<PersonData> getAddressBookForDateRange(LocalDate startDate, LocalDate endDate) {
+		String sql = String.format("SELECT * FROM addressbook WHERE STARTDATE BETWEEN '%s' AND '%s';",
+				Date.valueOf(startDate), Date.valueOf(endDate));
+		return this.getAddressBookDataUsingDB(sql);
+	}
+
+	private List<PersonData> addressBookList = new ArrayList<>();
+		try (Connection con = this.getConnection()) {
+			Statement statement = con.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			employeepayrollList = this.getPersonData(resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return addressBookList;
 	}
 }

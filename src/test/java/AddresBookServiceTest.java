@@ -29,4 +29,15 @@ public class AddressBookServiceTest {
 		boolean result = addressBookService.checkAddressBookInSyncWithDB("REKHA");
 		Assert.assertTrue(result);
 	}
+
+	@Test
+	public void givenDateRange_WhenRetrieved_ShouldMatchEmployeeCount() throws AddressBookException {
+		AddressBookService addressBookService = new AddressBookService();
+		addressBookService.readPersonData(DB_IO);
+		LocalDate startDate = LocalDate.of(2018, 01, 01);
+		LocalDate endDate = LocalDate.now();
+		List<PersonData> addressBookData = addressBookService.readAddressBookForDateRange(DB_IO, startDate,
+				endDate);
+		Assert.assertEquals(1, addressBookData.size());
+	}
 }

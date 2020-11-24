@@ -47,14 +47,12 @@ public class AddressBookService {
 		addressBookList.add(new PersonData(id, firstName, lastName, address, city, state, zip, phoneNumber, emailId));
 	}
 
-	// uc2
 	public List<PersonData> readPersonData(IOService ioService) {
 		if (ioService.equals(IOService.DB_IO))
 			this.addressBookList = addressBookDBService.readData();
 		return this.addressBookList;
 	}
 
-	// uc3
 	public void updatePersonAddress(String firstname, String address) {
 		int result = addressBookDBService.updatePersonData(firstname, address);
 		if (result == 0)
@@ -64,7 +62,6 @@ public class AddressBookService {
 			addressBookData.Address = address;
 	}
 
-	// uc3
 	private PersonData getPersonData(String firstname) {
 		PersonData addressBookData;
 		addressBookData = this.addressBookList.stream()
@@ -73,9 +70,14 @@ public class AddressBookService {
 		return addressBookData;
 	}
 
-	// uc3
 	public boolean checkAddressBookInSyncWithDB(String firstname) {
 		List<PersonData> addressBookDataList = addressBookDBService.getPersonData(firstname);
 		return addressBookDataList.get(0).equals(getPersonData(firstname));
+	}
+
+	public List<PersonData> readAddressBookForDateRange(IOService ioService, LocalDate startDate, LocalDate endDate) {
+		if (ioService.equals(IOService.DB_IO))
+			return addressBookDBService.getAddressBookForDateRange(startDate, endDate);
+		return null;
 	}
 }
