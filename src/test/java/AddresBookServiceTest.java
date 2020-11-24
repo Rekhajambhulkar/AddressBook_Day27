@@ -1,7 +1,6 @@
 package com.addressbook;
 
 import org.junit.Test;
-
 import com.addressbook.PersonData;
 import static com.addressbook.AddressBookService.IOService.DB_IO;
 import static com.addressbook.AddressBookService.IOService.FILE_IO;
