@@ -140,4 +140,9 @@ public class AddressBookDBService {
 		}
 		return addressBookList;
 	}
+
+	public List<PersonData> searchByCity(String city) {
+		String sql = String.format("SELECT * FROM ADDRESSBOOK WHERE city = '%s';", city);
+		return this.getAddressBookDataUsingDB(sql);
+	}
 }

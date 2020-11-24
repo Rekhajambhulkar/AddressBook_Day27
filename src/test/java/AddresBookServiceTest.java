@@ -40,4 +40,11 @@ public class AddressBookServiceTest {
 				endDate);
 		Assert.assertEquals(1, addressBookData.size());
 	}
+
+	@Test
+	public void givenNewAddressforPerson_WhensearchByState_ShouldSyncWithDB() throws AddressBookException {
+		AddressBookService addressBookService = new AddressBookService();
+		List<PersonData> addressBookData = addressBookService.searchByCity(AddressBookService.IOService.DB_IO, "PUNE");
+		Assert.assertEquals(2, addressBookData.size());
+	}
 }

@@ -80,4 +80,8 @@ public class AddressBookService {
 			return addressBookDBService.getAddressBookForDateRange(startDate, endDate);
 		return null;
 	}
+
+	public List<PersonData> searchByCity(IOService ioService, String state) {
+		return addressBookDBService.searchByCity(state);
+	}
 }
