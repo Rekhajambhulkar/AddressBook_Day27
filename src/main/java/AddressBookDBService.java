@@ -13,8 +13,19 @@ import java.util.List;
 
 public class AddressBookDBService {
 
-//Create connection
-private Connection getConnection() throws SQLException {
+	private PreparedStatement addressBookDataStatement;
+	private static AddressBookDBService addressBookDBService;
+
+	private AddressBookDBService() {}
+
+	public static AddressBookDBService getInstance() {
+		if (addressBookDBService == null)
+			addressBookDBService = new AddressBookDBService();
+		return addressBookDBService;
+	}
+
+	//Create connection
+	private Connection getConnection() throws SQLException {
 		String jdbcURL = "jdbc:mysql://localhost:3306/addressBook_service?useSSL=false";
 		String userName = "root";
 		String password = "root";
@@ -49,5 +60,70 @@ private Connection getConnection() throws SQLException {
 			e.printStackTrace();
 		}
 		return addressBookList;
+	}
+
+	// uc3
+	public List<PersonData> getPersonData(String firstname) {
+		List<PersonData> addressBookList = null;
+		if (this.addressBookDataStatement == null)
+			this.preparedStatementForAddressBook();
+		try {
+			addressBookDataStatement.setString(1, firstname);
+			ResultSet resultSet = addressBookDataStatement.executeQuery();
+			addressBookList = this.getPersonData(resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return addressBookList;
+	}
+
+	private List<PersonData> getPersonData(ResultSet resultSet) {
+		List<PersonData> addressBookList = new ArrayList<>();
+		try {
+			while (resultSet.next()) {
+				int id = resultSet.getInt("Id");
+				String firstName = resultSet.getString("FirstName");
+				String lastName = resultSet.getString("LastName");
+				String address = resultSet.getString("Address");
+				String city = resultSet.getString("City");
+				String state = resultSet.getString("State");
+				int zip = resultSet.getInt("Zip");
+				long phoneNumber = resultSet.getLong("PhoneNumber");
+				String emailId = resultSet.getString("EmailId");
+				LocalDate startDate = resultSet.getDate("startDate").toLocalDate();
+				addressBookList.add(new PersonData(id,firstName, lastName, address, city, state, zip, phoneNumber, emailId,startDate));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return addressBookList;
+	}
+
+	// uc3
+	public int updatePersonData(String firstname, String address) {
+		return this.updatePersonDataUsingStatement(firstname, address);
+	}
+
+	// uc3
+	private int updatePersonDataUsingStatement(String firstname, String address) {
+		String sql = String.format("update addressbook set address = '%s' where firstname = '%s';", address, firstname);
+		try (Connection con = this.getConnection()) {
+			Statement statement = con.createStatement();
+			return statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	// uc3
+	private void preparedStatementForAddressBook() {
+		try {
+			Connection con = this.getConnection();
+			String sql = "SELECT * FROM addressbook WHERE firstname= ? ";
+			addressBookDataStatement = con.prepareStatement(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

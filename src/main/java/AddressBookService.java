@@ -53,4 +53,29 @@ public class AddressBookService {
 			this.addressBookList = addressBookDBService.readData();
 		return this.addressBookList;
 	}
+
+	// uc3
+	public void updatePersonAddress(String firstname, String address) {
+		int result = addressBookDBService.updatePersonData(firstname, address);
+		if (result == 0)
+			return;
+		PersonData addressBookData = this.getPersonData(firstname);
+		if (addressBookData != null)
+			addressBookData.Address = address;
+	}
+
+	// uc3
+	private PersonData getPersonData(String firstname) {
+		PersonData addressBookData;
+		addressBookData = this.addressBookList.stream()
+				.filter(employeePayrollDataItem -> employeePayrollDataItem.FirstName.equals(firstname)).findFirst()
+				.orElse(null);
+		return addressBookData;
+	}
+
+	// uc3
+	public boolean checkAddressBookInSyncWithDB(String firstname) {
+		List<PersonData> addressBookDataList = addressBookDBService.getPersonData(firstname);
+		return addressBookDataList.get(0).equals(getPersonData(firstname));
+	}
 }
