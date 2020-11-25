@@ -25,6 +25,7 @@ public class AddressBookService {
 		this.addressBookList = addressBookList;
 	}
 
+	//Function for Read Person Data
 	private void readPersonData(Scanner consoleInputReader) {
 		System.out.println("Enter Id: ");
 		int id = consoleInputReader.nextInt();
@@ -53,6 +54,7 @@ public class AddressBookService {
 		return this.addressBookList;
 	}
 
+	//Function for Update person contacts
 	public void updatePersonAddress(String firstname, String address) {
 		int result = addressBookDBService.updatePersonData(firstname, address);
 		if (result == 0)
@@ -81,7 +83,15 @@ public class AddressBookService {
 		return null;
 	}
 
+	//Function for Retrieve city from DB
 	public List<PersonData> searchByCity(IOService ioService, String state) {
 		return addressBookDBService.searchByCity(state);
+	}
+
+	//Function for add Contacts in DB
+	public void addToAddressBook(String firstname, String lastname, String address, String city, String state, int zip,
+			int phoneNumber, String emailId, LocalDate startDate) {
+		addressBookList.add(addressBookDBService.addEmployeeToPayroll(firstname, lastname, address, city, state, zip,
+				phoneNumber, emailId, startDate));
 	}
 }

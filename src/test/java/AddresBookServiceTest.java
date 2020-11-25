@@ -46,4 +46,13 @@ public class AddressBookServiceTest {
 		List<PersonData> addressBookData = addressBookService.searchByCity(AddressBookService.IOService.DB_IO, "PUNE");
 		Assert.assertEquals(2, addressBookData.size());
 	}
+
+	@Test
+	public void givenNewPerson_WhenAdded_ShouldSyncWithDB() {
+		AddressBookService addressBookService = new AddressBookService();
+		addressBookService.readPersonData(DB_IO);
+		addressBookService.addToAddressBook("MAHI", "KHURANA", "LONAVALA", "PUNE", "MAHARASHTRA",432415, 98226256,"mahi.khuran@gmail.com",LocalDate.now());
+		boolean result = addressBookService.checkAddressBookInSyncWithDB("MAHI");
+		Assert.assertTrue(result);
+	}
 }
