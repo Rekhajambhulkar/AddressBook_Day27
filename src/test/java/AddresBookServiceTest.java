@@ -55,4 +55,27 @@ public class AddressBookServiceTest {
 		boolean result = addressBookService.checkAddressBookInSyncWithDB("MAHI");
 		Assert.assertTrue(result);
 	}
+
+	@Test
+	public void givenPerson_WhenAddedToDB_ShouldMatchPersonEntries() {
+	PersonData[] arrayOfEmps = {
+			new PersonData (0,"shweta","sane","chinchwad","pune","maharahstra",435678,98226265,"saneshweta@gmail.com",LocalDate.now()),
+			new PersonData (0,"nupoor","khan","pimapri","pune","maharahstra",234532,98778789,"nuppor123@gmail.com",LocalDate.now()),
+			new PersonData (0,"ankita","bhat","Aundh","pune","maharahstra",675432,98665566,"ankita.bhat@gmail.com",LocalDate.now()),
+			new PersonData (0,"Ash","khurana","kothrud","pune","maharahstra",412432,98342189,"ash.khurana@gmail.com",LocalDate.now()),
+			new PersonData (0,"piyu","vaste","chinchwad","pune","maharahstra",213434,98765678,"piyu12.vaste@gmail.com",LocalDate.now()),
+	};
+	AddressBookService addressBookService = new AddressBookService();
+	addressBookService.readPersonData(DB_IO);
+	Instant start = Instant.now();
+	addressBookService.addToAddressBook(Arrays.asList(arrayOfEmps));
+	Instant end = Instant.now();
+	System.out.println("Duration without thread:"+ Duration.between(start,end));
+	Instant threadStart = Instant.now();
+	addressBookService.addEmployeePayrollWithThread(Arrays.asList(arrayOfEmps));
+	Instant threadEnd = Instant.now();
+	System.out.println("Duration with thread"+Duration.between(threadStart,threadEnd));
+	addressBookService.printData(DB_IO);
+	Assert.assertEquals(12, addressBookService.countEntries(DB_IO));
+	}
 }

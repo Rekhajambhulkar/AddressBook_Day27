@@ -94,4 +94,58 @@ public class AddressBookService {
 		addressBookList.add(addressBookDBService.addEmployeeToPayroll(firstname, lastname, address, city, state, zip,
 				phoneNumber, emailId, startDate));
 	}
+
+	//Function for adding multiple contacts in DB
+	public void addToAddressBook(List<PersonData> personDataList) {
+		personDataList.forEach(addressBookData -> {
+			this.addEmployeeToPayroll(addressBookData.FirstName, addressBookData.LastName, addressBookData.Address,
+					addressBookData.City, addressBookData.State, addressBookData.Zip, addressBookData.PhoneNumber,
+					addressBookData.EmailId, addressBookData.startDate);
+		});
+	}
+
+	//Add multiple contacts using Thread
+	public void addEmployeePayrollWithThread(List<PersonData> personDataList) {
+		Map<Integer, Boolean> personAdditionStatus = new HashMap<Integer, Boolean>();
+		personDataList.forEach(addressBookData -> {
+			Runnable task = () -> {
+				personAdditionStatus.put(addressBookData.hashCode(), false);
+				System.out.println("person bieng added:" + Thread.currentThread().getName());
+				this.addEmployeeToPayroll(addressBookData.FirstName, addressBookData.LastName, addressBookData.Address,
+						addressBookData.City, addressBookData.State, addressBookData.Zip, addressBookData.PhoneNumber,
+						addressBookData.EmailId, addressBookData.startDate);
+				personAdditionStatus.put(addressBookData.hashCode(), true);
+				System.out.println("Person added: " + Thread.currentThread().getName());
+			};
+			Thread thread = new Thread(task, addressBookData.FirstName);
+			thread.start();
+		});
+		while (personAdditionStatus.containsValue(false)) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				System.out.println(personDataList);
+			}
+		}
+	}
+
+	public long countEntries(IOService ioService) {
+		if (ioService.equals(IOService.FILE_IO))
+			return new AddressBookFileIOService().countEntries();
+		return addressBookList.size();
+	}
+
+	public void printData(IOService ioService) {
+		if (ioService.equals(IOService.FILE_IO))
+			new AddressBookFileIOService().printData();
+		else
+			System.out.println(addressBookList);
+	}
+
+	public void writeEmployeePayrollData(IOService ioService) {
+		if (ioService.equals(IOService.CONSOLE_IO))
+			System.out.println("\n Writing Employee payroll roaster to console\n" + addressBookList);
+		else if (ioService.equals(IOService.FILE_IO))
+			new AddressBookFileIOService().writeData(addressBookList);
+	}
 }
